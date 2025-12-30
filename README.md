@@ -1,16 +1,78 @@
-# shop_ui
+# 🛍️ Flutter Shop UI
 
-A new Flutter project.
+Flutter Shop UI is a beautifully designed **e-commerce frontend UI build with Flutter**.  
+It showcases product listings, detail pages, and stylish UI components — perfect for portfolios or extending with backend integration.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🌟 Features
 
-A few resources to get you started if this is your first Flutter project:
+- 🛒 Product grid & list UI  
+- 📦 Product detail design  
+- ✨ Smooth animations & interactions  
+- 📱 Fully responsive on mobile & tablets  
+- ⚛️ Built with Flutter widgets and best practices
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🛠 Tech Stack
+
+- **Flutter**
+- **Dart**
+- **Material Design**
+- **Provider / State Management (optional)**
+- **Visual Studio Code / Android Studio**
+
+
+---
+
+## ⚙️ Getting Started
+
+### 1️⃣ Install Flutter
+Make sure Flutter is installed:
+```bash
+flutter --version
+```
+
+
+### 2️⃣ Clone the repository
+```bash
+git clone https://github.com/bhaumik-1910/Flutter_Shop_UI.git
+cd Flutter_Shop_UI
+```
+
+
+### 3️⃣ Install dependencies
+```bash
+flutter pub get
+```
+
+### 4️⃣ Configure API Endpoint
+Open api_service.dart and set your upload API URL:
+```bash
+const String uploadUrl = "https://your-api-endpoint.com/upload";
+```
+
+### 5️⃣ Run the app
+Android / iOS / Web
+```bash
+flutter run
+```
+
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+## 👤 Author
+
+**Bhaumik Patel**  
+GitHub: [@bhaumik-1910](https://github.com/bhaumik-1910)
+
+---
+
+## ⭐ Support
+
+If you find this project useful, please give it a ⭐ on GitHub!
