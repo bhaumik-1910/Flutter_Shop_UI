@@ -1,30 +1,51 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:shop_ui/main.dart';
+import 'package:shop_ui/models/coffee_item.dart';
+import 'package:shop_ui/state/shop_state_controller.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group('Shop State Unit Tests', () {
+    late ShopStateController controller;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    setUp(() {
+      controller = ShopStateController();
+    });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    test('Initial catalog and favorites state', () {
+      expect(controller.filteredCoffees.isNotEmpty, true);
+      expect(controller.favoriteCount, greaterThan(0));
+    });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    test('Add item to cart and calculate price', () {
+      final coffee = CoffeeItem.catalog.first;
+      final initialCount = controller.totalCartItemsCount;
+
+      controller.addToCart(coffee, size: CupSize.large, quantity: 2);
+      expect(controller.totalCartItemsCount, initialCount + 2);
+      expect(controller.subtotalPrice, greaterThan(0));
+    });
+
+    test('Apply promo code COFFEE20 gives 20% discount', () {
+      final success = controller.applyPromoCode('COFFEE20');
+      expect(success, true);
+      expect(controller.promoDiscountPercent, 0.20);
+      expect(controller.discountAmount, greaterThan(0));
+    });
+
+    test('Toggle favorites', () {
+      const coffeeId = 'black_coffee_1';
+      final initialFav = controller.isFavorite(coffeeId);
+      controller.toggleFavorite(coffeeId);
+      expect(controller.isFavorite(coffeeId), !initialFav);
+    });
+  });
+
+  testWidgets('Welcome Screen Smoke Test', (WidgetTester tester) async {
+    final controller = ShopStateController();
+    await tester.pumpWidget(MyApp(controller: controller));
+
+    // Verify Coffee Shop title and Get Started CTA exist
+    expect(find.text('Coffee Shop'), findsOneWidget);
+    expect(find.text('Get Started'), findsOneWidget);
   });
 }

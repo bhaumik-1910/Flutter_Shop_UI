@@ -1,139 +1,235 @@
 import 'package:flutter/material.dart';
-import 'package:shop_ui/widgets/home_bottom_bar.dart';
-import 'package:shop_ui/widgets/items_widget.dart';
+import '../core/theme/app_colors.dart';
+import '../core/theme/app_typography.dart';
+import '../core/utils/snackbar_helper.dart';
+import '../widgets/category_chip_bar.dart';
+import '../widgets/custom_search_bar.dart';
+import '../widgets/items_widget.dart';
+import '../widgets/promo_banner_card.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    _tabController = TabController(length: 4, vsync: this, initialIndex: 0);
-    _tabController.addListener(_handleTabSelection);
-    super.initState();
-  }
-
-  void _handleTabSelection() {
-    if (_tabController.indexIsChanging) {
-      setState(() {});
-    }
-  }
-
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
+  void _showNotificationsSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return Container(
+          padding: const EdgeInsets.all(24),
+          decoration: const BoxDecoration(
+            color: AppColors.surfaceDark,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+            border: Border(
+              top: BorderSide(color: AppColors.borderLight, width: 1.5),
+            ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Container(
+                  width: 44,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 18),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Notifications', style: AppTypography.headingSmall(fontSize: 20)),
+                  IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white70),
+                    onPressed: () => Navigator.pop(ctx),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.local_offer_rounded, color: AppColors.primary),
+                ),
+                title: Text('20% Off Weekend Special', style: AppTypography.headingSmall(fontSize: 15)),
+                subtitle: Text(
+                  'Use code COFFEE20 at checkout today!',
+                  style: AppTypography.caption(color: AppColors.textMuted),
+                ),
+              ),
+              const Divider(color: AppColors.divider),
+              ListTile(
+                contentPadding: EdgeInsets.zero,
+                leading: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: AppColors.goldStar.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.star_rounded, color: AppColors.goldStar),
+                ),
+                title: Text('Loyalty Stamp Added', style: AppTypography.headingSmall(fontSize: 15)),
+                subtitle: Text(
+                  'You\'re 2 cups away from a free Latte reward.',
+                  style: AppTypography.caption(color: AppColors.textMuted),
+                ),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.background,
       body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.only(top: 15),
-          child: ListView(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.sort_rounded,
-                        color: Colors.white.withOpacity(0.5),
-                        size: 35,
+        bottom: false,
+        child: ListView(
+          padding: const EdgeInsets.only(top: 10, bottom: 95),
+          children: [
+            // Top Bar: Location & Actions
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Location Pill
+                  GestureDetector(
+                    onTap: () {
+                      SnackbarHelper.showInfo(
+                        context,
+                        message: 'Downtown Roastery selected',
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: AppColors.cardSurface,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: AppColors.borderSubtle),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.location_on_rounded,
+                            color: AppColors.primary,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            'Downtown Seattle, WA',
+                            style: AppTypography.caption(
+                              color: AppColors.textPrimary,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          const Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: Colors.white60,
+                            size: 18,
+                          ),
+                        ],
                       ),
                     ),
-                    InkWell(
-                      onTap: () {},
-                      child: Icon(
-                        Icons.notifications,
-                        color: Colors.white.withOpacity(0.5),
-                        size: 35,
+                  ),
+
+                  // Notification Bell Icon with Live Badge
+                  GestureDetector(
+                    onTap: () => _showNotificationsSheet(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppColors.cardSurface,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(color: AppColors.borderSubtle),
+                      ),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          const Icon(
+                            Icons.notifications_outlined,
+                            color: Colors.white70,
+                            size: 22,
+                          ),
+                          Positioned(
+                            top: -2,
+                            right: -2,
+                            child: Container(
+                              width: 8,
+                              height: 8,
+                              decoration: const BoxDecoration(
+                                color: AppColors.primary,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15),
-                child: Text(
-                  "It's a Great Day for Coffee",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 15, vertical: 20),
-                width: MediaQuery.of(context).size.width,
-                height: 60,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 50, 54, 56),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "Find your coffee",
-                      hintStyle: TextStyle(
-                        color: Colors.white.withOpacity(0.5),
-                      ),
-                      prefixIcon: Icon(
-                        Icons.search,
-                        size: 30,
-                        color: Colors.white.withOpacity(0.5),
-                      )),
-                ),
-              ),
-              TabBar(
-                controller: _tabController,
-                labelColor: Color(0xFFE57734),
-                unselectedLabelColor: Colors.white.withOpacity(0.5),
-                isScrollable: true,
-                indicator: UnderlineTabIndicator(
-                    borderSide: BorderSide(
-                      width: 3,
-                      color: Color(0xFFE57734),
-                    ),
-                    insets: EdgeInsets.symmetric(horizontal: 1)
-                ),
-                labelStyle:TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                labelPadding: EdgeInsets.symmetric(horizontal: 20),
-                tabs: [
-                  Tab(text: "Hot Coffee"),
-                  Tab(text: "Cold Coffee"),
-                  Tab(text: "Cappuiccino"),
-                  Tab(text: "Americano"),
+                  ),
                 ],
               ),
-              SizedBox(height: 10),
-              Center(
-                child: [
-                  ItemsWidget(),
-                  ItemsWidget(),
-                  ItemsWidget(),
-                  ItemsWidget(),
-                ][_tabController.index],
+            ),
+
+            // Header Greeting
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Good Morning, Alex ☕',
+                    style: AppTypography.caption(
+                      color: AppColors.primaryLight,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Find the Best Coffee\nfor Your Taste',
+                    style: AppTypography.headingLarge(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+
+            // Interactive Search Bar
+            const CustomSearchBar(),
+
+            // High Conversion Promo Card
+            const PromoBannerCard(),
+
+            const SizedBox(height: 12),
+
+            // Filter Tabs
+            const CategoryChipBar(),
+
+            const SizedBox(height: 8),
+
+            // Responsive Items Grid
+            const ItemsWidget(),
+          ],
         ),
       ),
-      bottomNavigationBar: HomeBottomBar(),
     );
   }
 }

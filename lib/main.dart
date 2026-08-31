@@ -1,19 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:shop_ui/screen/welcome_screen.dart';
+import 'package:flutter/services.dart';
+import 'core/theme/app_theme.dart';
+import 'screen/welcome_screen.dart';
+import 'state/shop_state_controller.dart';
+import 'state/shop_state_provider.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Colors.black,
+      systemNavigationBarIconBrightness: Brightness.light,
+    ),
+  );
+
+  final shopStateController = ShopStateController();
+
+  runApp(
+    MyApp(controller: shopStateController),
+  );
+}
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final ShopStateController controller;
+
+  const MyApp({
+    super.key,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.black,
+    return ShopStateProvider(
+      controller: controller,
+      child: MaterialApp(
+        title: 'Artisan Coffee Shop',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.darkTheme,
+        home: const WelcomeScreen(),
       ),
-      home: WelcomeScreen(),
     );
   }
 }

@@ -1,70 +1,180 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:shop_ui/screen/home_screen.dart';
+import '../core/theme/app_colors.dart';
+import '../core/theme/app_typography.dart';
+import '../screens/main_navigation_screen.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Container(
-        padding: EdgeInsets.only(top: 100, bottom: 40),
-        decoration: BoxDecoration(
-            color: Colors.black,
-            image: DecorationImage(
-                image: AssetImage("images/bg.png"),
-                fit: BoxFit.cover,
-                opacity: 0.5)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Coffee Shop',
-              style: GoogleFonts.pacifico(fontSize: 50, color: Colors.white),
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          // Background Image with dark overlay gradient
+          Positioned.fill(
+            child: Image.asset(
+              'images/bg.png',
+              fit: BoxFit.cover,
             ),
-            Column(
-              children: [
-                Text(
-                  'Feeling Low? Tack a Sip of Coffee',
-                  style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 1),
+          ),
+          Positioned.fill(
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color(0x99000000),
+                    Color(0xCC08090A),
+                    Color(0xF00D0E10),
+                  ],
+                  stops: [0.0, 0.45, 0.85],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
-                SizedBox(
-                  height: 80,
-                ),
-                Material(
-                  color: Color(0xffE57734),
-                  borderRadius: BorderRadius.circular(10),
-                  child: InkWell(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomeScreen(),
-                          ));
-                    },
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 15, horizontal: 35),
-                      child: Text(
-                        'Get Start',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 1),
+              ),
+            ),
+          ),
+
+          // Main Content
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 30),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // App Title Header
+                  Column(
+                    children: [
+                      const SizedBox(height: 30),
+                      Text(
+                        'Coffee Shop',
+                        style: AppTypography.displayPacifico(
+                          fontSize: 46,
+                          color: Colors.white,
+                        ),
                       ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: AppColors.primary.withValues(alpha: 0.5),
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          '✦ Handcrafted Artisanal Brews',
+                          style: AppTypography.caption(
+                            color: AppColors.primaryLight,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // Bottom Welcome Action Card
+                  Container(
+                    padding: const EdgeInsets.all(28),
+                    decoration: BoxDecoration(
+                      color: AppColors.cardSurface.withValues(alpha: 0.75),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(
+                        color: AppColors.borderLight,
+                        width: 1.2,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.5),
+                          blurRadius: 24,
+                          offset: const Offset(0, 10),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Text(
+                          'Feeling Low?',
+                          textAlign: TextAlign.center,
+                          style: AppTypography.headingLarge(
+                            fontSize: 26,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Take a Sip of Specialty Coffee',
+                          textAlign: TextAlign.center,
+                          style: AppTypography.subtitle(
+                            color: AppColors.textSecondary,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          'Discover rich roasts, aromatic single-origins, and silky cold brews crafted for true enthusiasts.',
+                          textAlign: TextAlign.center,
+                          style: AppTypography.caption(
+                            color: AppColors.textMuted,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+
+                        // Get Started CTA Button
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const MainNavigationScreen(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            padding: const EdgeInsets.symmetric(vertical: 18),
+                            elevation: 8,
+                            shadowColor:
+                                AppColors.primary.withValues(alpha: 0.5),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Get Started',
+                                style: AppTypography.button(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              const Icon(
+                                Icons.arrow_forward_rounded,
+                                color: Colors.white,
+                                size: 22,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

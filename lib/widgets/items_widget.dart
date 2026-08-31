@@ -1,115 +1,66 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shop_ui/screen/single_item_screen.dart';
+import '../state/shop_state_provider.dart';
+import 'coffee_card.dart';
 
 class ItemsWidget extends StatelessWidget {
-  List img = [
-    'Latte',
-    'Espresso',
-    'Cold Coffee',
-    'Black Coffee',
-  ];
+  const ItemsWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      physics: NeverScrollableScrollPhysics(),
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      childAspectRatio: (150 / 220),
-      children: [
-        for (int i = 0; i < img.length; i++)
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 13),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              color: Color(0xFF212325),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.5),
-                  spreadRadius: 1,
-                  blurRadius: 8,
+    final state = context.shopState;
+    final coffees = state.filteredCoffees;
+
+    if (coffees.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 40),
+          child: Column(
+            children: [
+              const Icon(
+                Icons.coffee_maker_outlined,
+                size: 56,
+                color: Colors.white30,
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'No matching brews found',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
-              ],
-            ),
-            child: Column(
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => SingleItemScreen(img[i])));
-                  },
-                  child: Container(
-                    margin: EdgeInsets.all(8),
-                    child: Image.asset(
-                      "images/${img[i]}.png",
-                      width: 120,
-                      height: 120,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 8),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          img[i],
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "Best Coffee ",
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white60,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '\$30',
-                        style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Color(0xFFE57734),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Icon(
-                          CupertinoIcons.add,
-                          size: 20,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: 6),
+              const Text(
+                'Try searching for another coffee or reset filter',
+                style: TextStyle(color: Colors.white38, fontSize: 13),
+              ),
+              const SizedBox(height: 16),
+              TextButton(
+                onPressed: () => state.clearSearch(),
+                child: const Text('Reset Search'),
+              ),
+            ],
           ),
-      ],
+        ),
+      );
+    }
+
+    return GridView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
+        childAspectRatio: 0.68,
+      ),
+      itemCount: coffees.length,
+      itemBuilder: (context, index) {
+        final coffee = coffees[index];
+        return CoffeeCard(coffee: coffee);
+      },
     );
   }
 }
